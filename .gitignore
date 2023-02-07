@@ -24,5 +24,9 @@ yarn-error.log*
 
 # .NET Core
 .idea/
+.vs/
+bin/
+obj/
+packages/
 /WebApp/bin
 /WebApp/obj
