@@ -9,22 +9,21 @@ using WebApp.Middleware;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-builder.Services.AddGraphQL(b =>
-    b.AddAutoSchema<RootQuery>(config => config.WithMutation<RootMutation>())
-        .AddSystemTextJson()
-        .AddErrorInfoProvider(e => e.ExposeExceptionDetails = true));
-
 builder.Services.AddAutoMapper(typeof(UserProfile));
-
 builder.Services.AddDbContext<DataContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"));
 });
 
 builder.Services.AddAppServices();
-
 builder.Services.AddAppAuthentication(builder.Configuration);
 builder.Services.AddAppAuthorization();
+
+builder.Services.AddGraphQL(b =>
+    b.AddAutoSchema<RootQuery>(config => config.WithMutation<RootMutation>())
+        .AddSystemTextJson()
+        .AddAuthorizationRule()
+        .AddErrorInfoProvider(e => e.ExposeExceptionDetails = true));
 
 var app = builder.Build();
 
@@ -36,6 +35,7 @@ app.UseHsts();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 

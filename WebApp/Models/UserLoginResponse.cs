@@ -4,7 +4,21 @@ namespace WebApp.Models;
 
 public class UserLoginResponse
 {
-    public User User { set; get; } = new();
-    public string AccessToken { set; get; } = string.Empty;
-    public RefreshToken RefreshToken = new();
+    public User User { set; get; }
+    public string AccessToken { set; get; }
+    public RefreshToken RefreshToken { set; get; }
+
+    public UserLoginResponse(User user, string accessToken, RefreshToken refreshToken)
+    {
+        User = user;
+        AccessToken = accessToken;
+        RefreshToken = refreshToken;
+    }
+
+    public UserLoginResponse()
+    {
+        User = new();
+        AccessToken = string.Empty;
+        RefreshToken = new();
+    }
 }

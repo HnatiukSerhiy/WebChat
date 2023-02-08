@@ -18,8 +18,7 @@ public class EntityFrameworkUserDataProvider : IUserDataProvider
         mapper = new MapperSetup().Mapper;
     }
 
-    public List<User> GetAllUsers() =>
-        dataContext.Users
+    public List<User> GetAllUsers() => dataContext.Users
             .Select(user => mapper.Map<User>(user))
             .ToList();
 

@@ -53,7 +53,7 @@ namespace WebApp.Extensions
             services.AddAuthorization(options =>
             {
                 options.AddPolicy(PolicyType.UserPolicy,
-                    policy => policy.RequireClaim(ClaimType.Email));
+                    policy => policy.RequireRole(ClaimType.Email));
             });
         }
     }

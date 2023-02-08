@@ -6,5 +6,6 @@ namespace WebApp.GraphApi.Queries;
 
 public class UserQuery
 {
+    [Authorize]
     public static List<User> GetAll([FromServices] IUserDataProvider dataProvider) => dataProvider.GetAllUsers();
 }

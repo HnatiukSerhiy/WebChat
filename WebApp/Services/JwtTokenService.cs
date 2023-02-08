@@ -27,7 +27,7 @@ namespace WebApp.Services
                 issuer: configuration["Jwt:Issuer"],
                 audience: configuration["Jwt:Audience"],
                 claims,
-                expires: DateTime.Now.AddMinutes(Convert.ToInt32(configuration["Jwt:AccessTokenExpires"])),
+                expires: DateTime.Now.AddMinutes(int.Parse(configuration["Jwt:AccessTokenExpires"]!)),
                 signingCredentials: signingCredentials
             );
 
@@ -58,9 +58,7 @@ namespace WebApp.Services
             );
 
             if (jwtSecurityToken == null || !isAlgMatch)
-            {
                 throw new SecurityTokenException("Invalid token");
-            }
 
             return principal;
         }
@@ -80,11 +78,9 @@ namespace WebApp.Services
         private string GenerateRandomString(int length)
         {
             string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
-
             var result = string.Empty;
 
             using var randomNumberGenerator = RandomNumberGenerator.Create();
-
             while (result.Length != length)
             {
                 byte[] oneByte = new byte[1];

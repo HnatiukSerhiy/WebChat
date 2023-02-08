@@ -32,6 +32,12 @@ public class EntityFrameworkSessionDataProvider : ISessionDataProvider
         return mapper.Map<Session>(entity);
     }
 
+    public Session GetBySessionId(string sessionId)
+    {
+        var entity = dataContext.Sessions.First(session => session.Id == sessionId);
+        return mapper.Map<Session>(entity);
+    }
+
     public Session UpdateRefreshToken(RefreshToken token, string sessionId)
     {
         var currentEntity = dataContext.Sessions.First(session => session.Id == sessionId);
