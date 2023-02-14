@@ -51,7 +51,7 @@ public class AuthenticationService : IAuthenticationService
 
     public UserLoginResponse Login(UserLoginInput input)
     {
-        var accessToken = TryGetTokenFromHeader("Authorization");
+        string? accessToken = TryGetTokenFromHeader("Authorization");
         if (accessToken is not null)
             throw new AuthenticationException("User already login");
 

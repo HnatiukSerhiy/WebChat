@@ -1,13 +1,22 @@
-import { Routes, Route } from 'react-router-dom';
-import { Path } from '../Utilities/Enums';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { Path } from '../utilities/enums';
 import Home from '../pages/Home';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
+import RequireAuthenticated from './hoc/RequireAuthenticated';
 
 const AppRouter = () => {
     return (
         <Routes>
-            <Route path={Path.Home} element={<Home />} />
+            <Route path="/" element={<Navigate to={Path.Home} />} />
+            <Route
+              path={Path.Home}
+              element={(
+                <RequireAuthenticated>
+                  <Home />
+                </RequireAuthenticated>
+              )}
+            />
             <Route path={Path.Login} element={<Login />} />
             <Route path={Path.Register} element={<Register />} />
         </Routes>
