@@ -1,6 +1,13 @@
 const Home = () => {
+    const onClick = () => {
+
+    };
+
     return (
-        <div>Welcome!</div>
+      <div>
+        Welcome!
+        <button onClick={onClick}>Send msg</button>
+      </div>
     );
 };
 

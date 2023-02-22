@@ -1,12 +1,13 @@
 import type { UserLoginInput } from 'behavior/authentication/types';
-import { LoadingButton } from '@mui/lab';
-import { Box, Typography, TextField, Link, InputAdornment, IconButton } from '@mui/material';
+import { Box, Typography, TextField, Link, InputAdornment, IconButton, Button } from '@mui/material';
 import { VisibilityOff, Visibility } from '@mui/icons-material';
 import useFormContext, { type ValidationRules } from 'hooks/useFormContext';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import LoginIcon from '@mui/icons-material/Login';
 import useActions from 'hooks/useActions';
 import { Path } from 'utilities/enums';
+import useAppSelector from 'hooks/useAppSelector';
+import { useNavigate } from 'react-router-dom';
 
 type FormValues = {
   email?: string;
@@ -29,8 +30,16 @@ const LoginForm = () => {
   } = useFormContext<FormValues>(validationRules);
 
   const { loginUser } = useActions();
+  const navigate = useNavigate();
+  const user = useAppSelector(state => state.user);
 
-  const handleSubmit = () => isFormValid && loginUser(values as UserLoginInput);
+  useEffect(() => {
+    user && navigate(Path.Home);
+  }, [user, navigate]);
+
+  const handleSubmit = () => {
+    isFormValid && loginUser(values as UserLoginInput);
+  };
 
   return (
     <Box sx={{ maxWidth: '25rem' }} boxShadow={'5px 5px 10px #ccc'} padding={5}>
@@ -79,16 +88,16 @@ const LoginForm = () => {
         <Typography>
           Don't have an account? <Link href={Path.Register}>Register</Link>
         </Typography>
-        <LoadingButton
+        <Button
           variant="contained"
           fullWidth
           // type="submit"
-          loading={false}
+          // loading={false}
           sx={{ py: '0.8rem', mt: '1rem' }}
           onClick={handleSubmit}
         >
           Login
-        </LoadingButton>
+        </Button>
       </Box>
     </Box>
   );

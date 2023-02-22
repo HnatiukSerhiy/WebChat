@@ -17,9 +17,9 @@ namespace WebApp.Extensions
             services.AddScoped<ISessionDataProvider, EntityFrameworkSessionDataProvider>();
             services.AddScoped<IUserDataProvider, EntityFrameworkUserDataProvider>();
             services.AddHttpContextAccessor();
+            services.AddSingleton<IChatService, ChatService>();
             services.AddScoped<ITokenService, JwtTokenService>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
-
         }
 
         public static void AddAppAuthentication(this IServiceCollection services, IConfiguration configuration)
@@ -31,7 +31,7 @@ namespace WebApp.Extensions
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(options =>
             {
-                options.TokenValidationParameters = new TokenValidationParameters
+                options.TokenValidationParameters = new()
                 {
                     ValidateAudience = true,
                     ValidateIssuer = true,
@@ -45,6 +45,16 @@ namespace WebApp.Extensions
                     ClockSkew = TimeSpan.Zero
                 };
                 options.RequireHttpsMetadata = false;
+                options.Events = new()
+                {
+                    OnAuthenticationFailed = context =>
+                    {
+                        context.Response.StatusCode = 401;
+                        context.Response.Headers.Append("Authorization-failed", "true");
+
+                        return Task.CompletedTask;
+                    },
+                };
             });
         }
 

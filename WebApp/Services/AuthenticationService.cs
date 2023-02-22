@@ -46,7 +46,7 @@ public class AuthenticationService : IAuthenticationService
 
         scope.Complete();
 
-        return new(user, tokenService.CreateAccessToken(claims), refreshToken);
+        return new(user, tokenService.CreateAccessToken(claims), refreshToken.Token);
     }
 
     public UserLoginResponse Login(UserLoginInput input)
@@ -64,7 +64,7 @@ public class AuthenticationService : IAuthenticationService
         var (session, refreshToken, claims) = BuildAuthProperties(currentUser);
         sessionDataProvider.Add(session);
 
-        return new(currentUser, tokenService.CreateAccessToken(claims), refreshToken);
+        return new(currentUser, tokenService.CreateAccessToken(claims), refreshToken.Token);
     }
 
     public RefreshTokenResponse RefreshToken()

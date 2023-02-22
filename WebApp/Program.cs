@@ -1,14 +1,29 @@
 using GraphQL;
+using GraphQL.Server.Transports.AspNetCore;
+using GraphQL.Types;
 using Microsoft.EntityFrameworkCore;
 using WebApp.EntityFramework.DataContexts;
 using WebApp.Extensions;
 using WebApp.GraphApi;
+using WebApp.GraphApi.Subscriptions;
 using WebApp.Mapper;
 using WebApp.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
+const string corsSpecificOrigins = "CorsSpecificOrigins";
+
 builder.Services.AddControllers();
+
+builder.Services.AddCors(options =>
+    options.AddPolicy(corsSpecificOrigins,
+        policy => policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+    )
+);
+
 builder.Services.AddAutoMapper(typeof(UserProfile));
 builder.Services.AddDbContext<DataContext>(options =>
 {
@@ -20,7 +35,9 @@ builder.Services.AddAppAuthentication(builder.Configuration);
 builder.Services.AddAppAuthorization();
 
 builder.Services.AddGraphQL(b =>
-    b.AddAutoSchema<RootQuery>(config => config.WithMutation<RootMutation>())
+    b.AddAutoSchema<RootQuery>(schema => schema
+            .WithMutation<RootMutation>()
+            .WithSubscription<MessagesSubscription>())
         .AddSystemTextJson()
         .AddAuthorizationRule()
         .AddErrorInfoProvider(e => e.ExposeExceptionDetails = true));
@@ -31,18 +48,25 @@ if (app.Environment.IsDevelopment())
 {
 }
 
+app.UseWebSockets();
 app.UseHsts();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
+app.UseCors(corsSpecificOrigins);
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
-app.UseGraphQL();
+app.UseGraphQL<AuthorizationGraphQLHttpMiddleware<ISchema>>("/graphql", new GraphQLHttpMiddlewareOptions());
+app.UseGraphQLPlayground("/", new()
+{
+    GraphQLEndPoint = "/graphql",
+    SubscriptionsEndPoint = "/graphql",
+});
 app.UseGraphQLAltair();
 
-app.UseMiddleware<ExceptionMiddleware>();
+// app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseSpa(configuration =>
 {

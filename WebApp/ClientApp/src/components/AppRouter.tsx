@@ -10,6 +10,7 @@ const AppRouter = () => {
         <Routes>
             <Route path="/" element={<Navigate to={Path.Home} />} />
             <Route
+              index
               path={Path.Home}
               element={(
                 <RequireAuthenticated>
