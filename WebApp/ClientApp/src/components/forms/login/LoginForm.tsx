@@ -2,12 +2,11 @@ import type { UserLoginInput } from 'behavior/authentication/types';
 import { Box, Typography, TextField, Link, InputAdornment, IconButton, Button } from '@mui/material';
 import { VisibilityOff, Visibility } from '@mui/icons-material';
 import useFormContext, { type ValidationRules } from 'hooks/useFormContext';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { Path } from 'utilities/enums';
 import LoginIcon from '@mui/icons-material/Login';
 import useActions from 'hooks/useActions';
-import { Path } from 'utilities/enums';
-import useAppSelector from 'hooks/useAppSelector';
-import { useNavigate } from 'react-router-dom';
+import useLoggined from 'hooks/useLoggined';
 
 type FormValues = {
   email?: string;
@@ -28,14 +27,8 @@ const LoginForm = () => {
     onValueChange,
     onBlur,
   } = useFormContext<FormValues>(validationRules);
-
   const { loginUser } = useActions();
-  const navigate = useNavigate();
-  const user = useAppSelector(state => state.user);
-
-  useEffect(() => {
-    user && navigate(Path.Home);
-  }, [user, navigate]);
+  useLoggined();
 
   const handleSubmit = () => {
     isFormValid && loginUser(values as UserLoginInput);
@@ -91,8 +84,6 @@ const LoginForm = () => {
         <Button
           variant="contained"
           fullWidth
-          // type="submit"
-          // loading={false}
           sx={{ py: '0.8rem', mt: '1rem' }}
           onClick={handleSubmit}
         >

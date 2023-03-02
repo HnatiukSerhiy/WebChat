@@ -1,42 +1,55 @@
-import { filter, map, merge, Subject, switchMap, takeUntil } from 'rxjs';
-import { webSocket } from 'rxjs/webSocket';
-import { Epic } from 'store/types';
-import { createSocketConnection } from './actions';
+import type { Epic } from 'store/types';
+import {
+  type WebSocketAction,
+  createWebSocketConnection,
+  webSocketDisconnected,
+  disconnectWebSocket,
+} from './actions';
+import { filter, map, merge, switchMap } from 'rxjs';
+import { messageReceived } from 'behavior/messages';
+import WebSocketProvider from './webSocketProvider';
+import { messagesSubscription } from './queries';
 
-// const socket$ = webSocket('wss://localhost:7098/graphql');
+const webSocketProvider = new WebSocketProvider();
 
-const epic: Epic<any> = action$ => {
-  return action$.pipe(
-    filter(createSocketConnection.match),
-    switchMap(() => {
-      const openObserver$ = new Subject();
-      const closeObserver$ = new Subject();
+const epic: Epic<WebSocketAction> = action$ => {
+  const socket$ = webSocketProvider.createWebSocket('wss://localhost:7098/graphql');
 
-      const open$ = openObserver$.pipe(map(event => ({
-        type: 'SOCKET_CONNECTED',
-      })));
-
-      const close$ = closeObserver$.pipe(map(event => ({
-        type: 'SOCKET_DISCONNECTED',
-      })));
-
-      const options = {
-        url: 'wss://localhost:7098/graphql',
-        openObserver: openObserver$,
-        closeObserver: openObserver$,
+  const connection$ = action$.pipe(
+    filter(createWebSocketConnection.match),
+    map(action => action.payload),
+    switchMap(({ userId }) => {
+      const operation = {
+        type: 'start',
+        id: '1',
+        payload: {
+          operationName: 'msgs',
+          query: messagesSubscription,
+          variables: { userId },
+        },
       };
 
-      const msg$ = webSocket(options).pipe(map(response => ({ type: 'RECEIVED_MESSAGE', payload: response })));
+      socket$.next({ type: 'connection_init', payload: {} });
+      socket$.next(operation);
 
-      return merge(open$, close$, msg$).pipe(
-        takeUntil(action$.pipe(
-          filter(createSocketConnection.match),
-          ),
-        ),
+      return socket$.pipe(
+        map(data => {
+          console.log(data);
+          return messageReceived({ message: 'YES' });
+        }),
       );
+  }));
+
+  const disconnection$ = action$.pipe(
+    filter(disconnectWebSocket.match),
+    map(() => {
+      webSocketProvider.closeObserver.complete();
+      webSocketProvider.openObserver.complete();
+      return webSocketDisconnected();
     }),
   );
-};
 
+  return merge(connection$, disconnection$);
+};
 
 export default epic;

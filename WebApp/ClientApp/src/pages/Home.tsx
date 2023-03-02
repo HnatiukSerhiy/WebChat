@@ -1,14 +1,22 @@
+import useActions from 'hooks/useActions';
+import useAppSelector from 'hooks/useAppSelector';
+
 const Home = () => {
-    const onClick = () => {
+  const messages = useAppSelector(state => state.messages);
+  console.log(messages);
 
-    };
+  const { sendMessage } = useActions();
 
-    return (
-      <div>
-        Welcome!
-        <button onClick={onClick}>Send msg</button>
-      </div>
-    );
+  const onClick = () => {
+    sendMessage({ message: 'okay' });
+  };
+
+  return (
+    <div>
+      Welcome!
+      <button onClick={onClick}>Send msg</button>
+    </div>
+  );
 };
 
 export default Home;

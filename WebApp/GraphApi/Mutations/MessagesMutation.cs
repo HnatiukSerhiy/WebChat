@@ -7,6 +7,6 @@ namespace WebApp.GraphApi.Mutations;
 
 public class MessagesMutation
 {
-    public static Message AddMessage([FromServices] IChatService chatService, MessageInput message)
-        => chatService.PostMessage(message);
+    public static Message Send([FromServices] IChatService chatService, MessageInput input)
+        => chatService.PostMessage(input);
 }

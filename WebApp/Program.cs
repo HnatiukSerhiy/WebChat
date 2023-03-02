@@ -24,7 +24,7 @@ builder.Services.AddCors(options =>
     )
 );
 
-builder.Services.AddAutoMapper(typeof(UserProfile));
+builder.Services.AddAutoMapper(typeof(UserProfile), typeof(MessageProfile));
 builder.Services.AddDbContext<DataContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"));

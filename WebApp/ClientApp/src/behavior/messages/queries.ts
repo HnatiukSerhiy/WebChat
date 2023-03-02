@@ -1,6 +1,8 @@
 export const sendMessageMutation = `
-mutation sendMessage($message:String!){
+mutation sendMessage($input:MessageInput!){
   messages{
-    send
+    send(input:$input){
+      value
+    }
   }
 }`;
