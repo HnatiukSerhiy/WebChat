@@ -7,8 +7,9 @@ import {
 } from './actions';
 import { filter, map, merge, switchMap } from 'rxjs';
 import { messageReceived } from 'behavior/messages';
-import WebSocketProvider from './webSocketProvider';
 import { messagesSubscription } from './queries';
+import WebSocketProvider from './webSocketProvider';
+import { createConnectionInitOperation, createStartSubscriptionOperation } from './helpers';
 
 const webSocketProvider = new WebSocketProvider();
 
@@ -19,18 +20,11 @@ const epic: Epic<WebSocketAction> = action$ => {
     filter(createWebSocketConnection.match),
     map(action => action.payload),
     switchMap(({ userId }) => {
-      const operation = {
-        type: 'start',
-        id: '1',
-        payload: {
-          operationName: 'msgs',
-          query: messagesSubscription,
-          variables: { userId },
-        },
-      };
+      const initConnectionOperation = createConnectionInitOperation();
+      const subscriptionStartOperation = createStartSubscriptionOperation(messagesSubscription, { userId });
 
-      socket$.next({ type: 'connection_init', payload: {} });
-      socket$.next(operation);
+      socket$.next(initConnectionOperation);
+      socket$.next(subscriptionStartOperation);
 
       return socket$.pipe(
         map(data => {

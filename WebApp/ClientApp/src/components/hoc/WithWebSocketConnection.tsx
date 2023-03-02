@@ -1,4 +1,4 @@
-import { ReactElement, useEffect } from 'react';
+import { type ReactElement, useEffect } from 'react';
 import useActions from 'hooks/useActions';
 import useAppSelector from 'hooks/useAppSelector';
 
@@ -7,16 +7,16 @@ type Props = {
 };
 
 const WithWebSocketConnection = ({ children }: Props) => {
-  const { createWebSocketConnection } = useActions();
+  const { createWebSocketConnection, disconnectWebSocket } = useActions();
 
   const userId = useAppSelector(state => state.user!.id);
 
   useEffect(() => {
     createWebSocketConnection({ userId });
 
-    // return () => {
-    //   disconnectWebSocket();
-    // };
+    return () => {
+      disconnectWebSocket();
+    };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

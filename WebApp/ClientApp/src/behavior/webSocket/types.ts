@@ -1,4 +1,4 @@
-export type  SubscriptionStartMessage = {
+export type  SubscriptionMessage = {
   query: string;
   variables?: Record<string, unknown>;
   operationName: string;
@@ -6,8 +6,8 @@ export type  SubscriptionStartMessage = {
 
 export type OperationType = 'start' | 'connection_init';
 
-export type WebSocketOperation = {
+export type StartSubscriptionOperation = {
   id: string;
   type: OperationType;
-  payload: SubscriptionStartMessage;
+  payload: SubscriptionMessage;
 };
