@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using WebApp.Business.Models;
 using WebApp.EntityFramework.Entities;
 
 namespace WebApp.EntityFramework.DataContexts
@@ -7,6 +8,7 @@ namespace WebApp.EntityFramework.DataContexts
     {
         public DbSet<UserEntity> Users { get; set; }
         public DbSet<SessionEntity> Sessions { set; get; }
+        public DbSet<MessageEntity> Messages { set; get; }
 
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 
@@ -14,6 +16,7 @@ namespace WebApp.EntityFramework.DataContexts
         {
             modelBuilder.Entity<UserEntity>().ToTable("Users");
             modelBuilder.Entity<SessionEntity>().ToTable("Sessions");
+            modelBuilder.Entity<MessageEntity>().ToTable("Messages");
         }
     }
 }

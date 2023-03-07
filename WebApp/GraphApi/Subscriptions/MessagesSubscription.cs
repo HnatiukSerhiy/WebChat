@@ -7,7 +7,7 @@ namespace WebApp.GraphApi.Subscriptions;
 
 public class MessagesSubscription
 {
-    public static IObservable<Message> NewMessages([FromServices] IChatService chatService)
+    public static IObservable<Message> NewMessages([FromServices] IChatService chatService, int userId)
         => chatService.SubscribeAll();
 
     public static IObservable<Event> Events([FromServices] IChatService chatService)

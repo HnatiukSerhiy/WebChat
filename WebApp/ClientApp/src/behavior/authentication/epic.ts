@@ -51,18 +51,17 @@ const authenticationEpic: Epic<AuthenticationAction> = action$ => {
   );
 
   const refreshToken$ = action$.pipe(
-      filter(refreshToken.match),
-      mergeMap(() => performGraphRequest<RefreshTokenResponse>(refreshTokenMutation).pipe(
-              map(response => {
-                  const { accessToken, refreshToken } = response.authentication.refresh;
+    filter(refreshToken.match),
+    mergeMap(() => performGraphRequest<RefreshTokenResponse>(refreshTokenMutation).pipe(
+      map(response => {
+      const { accessToken, refreshToken, user } = response.authentication.refresh;
 
-                  localStorage.setItem('AccessToken', accessToken);
-                  localStorage.setItem('RefreshToken', refreshToken);
+      localStorage.setItem('AccessToken', accessToken);
+      localStorage.setItem('RefreshToken', refreshToken);
 
-                  return removeUser();
-              }),
-          ),
-      ),
+      return pushUser(user);
+      })),
+    ),
   );
 
   return merge(registerUser$, loginUser$, logoutUser$, refreshToken$);

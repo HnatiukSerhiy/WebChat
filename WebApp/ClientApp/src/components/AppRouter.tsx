@@ -5,6 +5,7 @@ import Login from '../pages/Login';
 import Register from '../pages/Register';
 import RequireAuthenticated from './hoc/RequireAuthenticated';
 import WithWebSocketConnection from './hoc/WithWebSocketConnection';
+import WithTokenRefresh from './hoc/WithTokenRefresh';
 
 const AppRouter = () => {
   return (
@@ -14,11 +15,13 @@ const AppRouter = () => {
         index
         path={Path.Home}
         element={(
-          <RequireAuthenticated>
-            <WithWebSocketConnection>
-              <Home />
-            </WithWebSocketConnection>
-          </RequireAuthenticated>
+          <WithTokenRefresh>
+            <RequireAuthenticated>
+              <WithWebSocketConnection>
+                <Home />
+              </WithWebSocketConnection>
+            </RequireAuthenticated>
+          </WithTokenRefresh>
         )}
       />
       <Route path={Path.Login} element={<Login />} />

@@ -94,7 +94,8 @@ public class AuthenticationService : IAuthenticationService
         return new()
         {
             AccessToken = newAccessToken,
-            RefreshToken = newRefreshToken,
+            RefreshToken = newRefreshToken.Token,
+            User = user,
         };
     }
 

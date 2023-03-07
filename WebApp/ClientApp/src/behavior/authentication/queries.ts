@@ -38,6 +38,13 @@ export const refreshTokenMutation =
     refresh{
       accessToken
       refreshToken
+      user{
+        id
+        lastname
+        firstname
+        email
+        description
+      }
     }
   }
 }`;

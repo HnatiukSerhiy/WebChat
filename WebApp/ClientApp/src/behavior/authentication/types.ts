@@ -53,6 +53,7 @@ export type RefreshTokenResponse = {
     refresh: {
       accessToken: string;
       refreshToken: string;
+      user: User;
     };
   };
 };

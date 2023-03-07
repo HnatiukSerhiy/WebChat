@@ -14,7 +14,6 @@ var builder = WebApplication.CreateBuilder(args);
 const string corsSpecificOrigins = "CorsSpecificOrigins";
 
 builder.Services.AddControllers();
-
 builder.Services.AddCors(options =>
     options.AddPolicy(corsSpecificOrigins,
         policy => policy
@@ -44,10 +43,6 @@ builder.Services.AddGraphQL(b =>
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-}
-
 app.UseWebSockets();
 app.UseHsts();
 app.UseHttpsRedirection();
@@ -59,15 +54,12 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.UseGraphQL<AuthorizationGraphQLHttpMiddleware<ISchema>>("/graphql", new GraphQLHttpMiddlewareOptions());
-app.UseGraphQLPlayground("/", new()
+/*app.UseGraphQLPlayground("/", new()
 {
     GraphQLEndPoint = "/graphql",
     SubscriptionsEndPoint = "/graphql",
-});
+});*/
 app.UseGraphQLAltair();
-
-// app.UseMiddleware<ExceptionMiddleware>();
-
 app.UseSpa(configuration =>
 {
     configuration.Options.SourcePath = "wwwroot";
