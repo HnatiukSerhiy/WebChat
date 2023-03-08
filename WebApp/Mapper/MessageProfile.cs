@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using WebApp.Business.Models;
 using WebApp.GraphApi.Types.Messages;
 using WebApp.Models;
 

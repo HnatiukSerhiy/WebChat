@@ -54,11 +54,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.UseGraphQL<AuthorizationGraphQLHttpMiddleware<ISchema>>("/graphql", new GraphQLHttpMiddlewareOptions());
-/*app.UseGraphQLPlayground("/", new()
-{
-    GraphQLEndPoint = "/graphql",
-    SubscriptionsEndPoint = "/graphql",
-});*/
+
 app.UseGraphQLAltair();
 app.UseSpa(configuration =>
 {

@@ -13,6 +13,7 @@ public class MapperSetup
         {
             config.AddProfile<UserProfile>();
             config.AddProfile<SessionProfile>();
+            config.AddProfile<MessagesProfile>();
         });
 
         Mapper = configuration.CreateMapper();

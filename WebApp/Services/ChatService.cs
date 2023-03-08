@@ -2,6 +2,8 @@
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using AutoMapper;
+using WebApp.Business.Interfaces;
+using WebApp.Business.Models;
 using WebApp.GraphApi.Types.Messages;
 using WebApp.Models;
 
@@ -9,34 +11,54 @@ namespace WebApp.Services;
 
 public class ChatService : IChatService
 {
-    private readonly Subject<Event> broadcaster = new();
-
+    private readonly Subject<Event> broadcaster;
+    private readonly IMessagesDataProvider messagesDataProvider;
     private readonly IMapper mapper;
 
-    public ChatService(IMapper mapper)
+    public ChatService(IMapper mapper, IMessagesDataProvider messagesDataProvider)
     {
         this.mapper = mapper;
+        this.messagesDataProvider = messagesDataProvider;
+        broadcaster = new();
     }
 
-    public string? DeleteMessage(int id)
-    {
-        throw new NotImplementedException();
-    }
+    public IEnumerable<Message> GetChatMessages(int senderId, int receiverId)
+        => messagesDataProvider.GetChatMessages(senderId, receiverId);
 
-    public IEnumerable<Message> GetAllMessages()
-    {
-        throw new NotImplementedException();
-    }
+    public IEnumerable<Message> GetMessagesForUser(int userId)
+        => messagesDataProvider.GetMessagesForUser(userId);
 
-    public IEnumerable<Message> GetMessageFromUser(string from)
+    public IEnumerable<Chat> GetChats(int userId)
     {
-        throw new NotImplementedException();
+        var messages = messagesDataProvider.GetMessagesForUser(userId);
+        var usersIds = new List<int>();
+        var chats = new List<Chat>();
+
+        foreach (var message in messages)
+        {
+            if (message.SenderId != userId)
+                usersIds.Add(message.SenderId);
+
+            if (message.ReceiverId != userId)
+                usersIds.Add(message.ReceiverId);
+        }
+
+        foreach (var id in usersIds)
+        {
+            var chatMessages = messages.Where(message =>
+                message.ReceiverId == id && message.SenderId == userId ||
+                message.SenderId == id && message.ReceiverId == userId);
+
+            chats.Add(new($"{id}_{userId}", chatMessages));
+        }
+
+        return chats;
     }
 
     public Message PostMessage(MessageInput input)
     {
         var message = mapper.Map<Message>(input);
-        broadcaster.OnNext(new Event() { Type = EventType.NewMessage, Message = message });
+        broadcaster.OnNext(new(EventType.NewMessage, message));
         return message;
     }
 
@@ -45,11 +67,12 @@ public class ChatService : IChatService
         return broadcaster.Where(x => x.Type == EventType.NewMessage).Select(x => x.Message!);
     }
 
-    public IObservable<Event> SubscribeEvents() => broadcaster;
-
-    public IObservable<Message> SubscribeFromUser(string from)
+    public IObservable<Message> SubscribeForReceiving(int receiverId)
     {
-        throw new Exception();
-        // return SubscribeAll().Where(x => string.Equals(x.From, from, StringComparison.OrdinalIgnoreCase));
+        return broadcaster.Where(x => x.Type == EventType.NewMessage)
+            .Select(x => x.Message!)
+            .Where(x => x.ReceiverId == receiverId);
     }
+
+    public IObservable<Event> SubscribeEvents() => broadcaster;
 }

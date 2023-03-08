@@ -18,7 +18,7 @@ public class EntityFrameworkUserDataProvider : IUserDataProvider
         mapper = new MapperSetup().Mapper;
     }
 
-    public List<User> GetAllUsers() => dataContext.Users
+    public IEnumerable<User> GetAllUsers() => dataContext.Users
             .Select(user => mapper.Map<User>(user))
             .ToList();
 
@@ -28,6 +28,13 @@ public class EntityFrameworkUserDataProvider : IUserDataProvider
         var newEntity = dataContext.Users.Add(entity).Entity;
         dataContext.SaveChanges();
         return mapper.Map<User>(newEntity);
+    }
+
+    public IEnumerable<User> GetByNamePattern(string pattern)
+    {
+        return dataContext.Users
+            .Where(user => (user.Firstname + user.Lastname).Contains(pattern))
+            .Select(user => mapper.Map<User>(user));
     }
 
     public User GetByEmail(string email)

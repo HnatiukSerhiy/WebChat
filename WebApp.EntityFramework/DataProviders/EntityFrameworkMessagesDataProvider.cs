@@ -18,6 +18,24 @@ public class EntityFrameworkMessageDataProvider : IMessagesDataProvider
         mapper = new MapperSetup().Mapper;
     }
 
+    public IEnumerable<Message> GetChatMessages(int senderId, int receiverId)
+    {
+        return dataContext.Messages
+            .Where(message =>
+                message.SenderId == senderId &&
+                message.ReceiverId == receiverId ||
+                message.ReceiverId == senderId &&
+                message.SenderId == receiverId)
+            .Select(message => mapper.Map<Message>(message));
+    }
+
+    public IEnumerable<Message> GetMessagesForUser(int userId)
+    {
+        return dataContext.Messages
+            .Where(message => message.SenderId == userId || message.ReceiverId == userId)
+            .Select(message => mapper.Map<Message>(message));
+    }
+
     public IEnumerable<Message> GetFromUser(int userId)
     {
         return dataContext.Messages
