@@ -1,25 +1,14 @@
-import useActions from 'hooks/useActions';
-import useAppSelector from 'hooks/useAppSelector';
-import { useEffect } from 'react';
+import './Home.css';
+import Chat from 'components/chat/Chat';
+import Sidebar from 'components/sidebar/Sidebar';
 
 const Home = () => {
-  const messages = useAppSelector(state => state.messages);
-  console.log(messages);
-
-  const { sendMessage } = useActions();
-
-  const onClick = () => {
-    sendMessage({ message: 'okay' });
-  };
-
-  useEffect(() => {
-    Notification.requestPermission();
-  }, []);
-
   return (
-    <div>
-      Welcome!
-      <button onClick={onClick}>Send msg</button>
+    <div className="home">
+      <div className="container">
+        <Sidebar />
+        <Chat />
+      </div>
     </div>
   );
 };

@@ -14,15 +14,7 @@ const AppRouter = () => {
       <Route
         index
         path={Path.Home}
-        element={(
-          <WithTokenRefresh>
-            <RequireAuthenticated>
-              <WithWebSocketConnection>
-                <Home />
-              </WithWebSocketConnection>
-            </RequireAuthenticated>
-          </WithTokenRefresh>
-        )}
+        element={(<Home />)}
       />
       <Route path={Path.Login} element={<Login />} />
       <Route path={Path.Register} element={<Register />} />

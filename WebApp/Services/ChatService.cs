@@ -30,7 +30,7 @@ public class ChatService : IChatService
 
     public IEnumerable<Chat> GetChats(int userId)
     {
-        var messages = messagesDataProvider.GetMessagesForUser(userId);
+        var messages = messagesDataProvider.GetMessagesForUser(userId).ToArray();
         var usersIds = new List<int>();
         var chats = new List<Chat>();
 
