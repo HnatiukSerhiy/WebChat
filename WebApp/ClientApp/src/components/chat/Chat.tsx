@@ -9,7 +9,7 @@ const Chat = () => {
         <span>User</span>
       </div>
       <Messages />
-      <Input />
+      <Input receiverId={0} />
     </div>
   );
 };

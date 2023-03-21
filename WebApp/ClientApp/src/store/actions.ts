@@ -7,8 +7,9 @@ import {
   refreshToken,
 } from 'behavior/authentication';
 
-import { messageReceived, sendMessage } from 'behavior/messages';
+import { messageReceived, sendMessage, getChats } from 'behavior/messages';
 import { createWebSocketConnection, disconnectWebSocket } from 'behavior/webSocket';
+import { searchUser } from 'behavior/users/actions';
 
 const actions = {
   pushUser,
@@ -21,6 +22,8 @@ const actions = {
   disconnectWebSocket,
   messageReceived,
   sendMessage,
+  getChats,
+  searchUser,
 };
 
 export default actions;

@@ -6,3 +6,13 @@ mutation sendMessage($input:MessageInput!){
     }
   }
 }`;
+
+export const getChatsQuery = `
+query getChats($input:Int!){
+  messages{
+    getChats(userId:$input){
+      id
+      messages
+    }
+  }
+}`;

@@ -11,3 +11,10 @@ export type StartSubscriptionOperation = {
   type: OperationType;
   payload: SubscriptionMessage;
 };
+
+export type SubscriptionMessageResponse = {
+  id: number;
+  value: string;
+  senderId: number;
+  receiverId: number;
+};

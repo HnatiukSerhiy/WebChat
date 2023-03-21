@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using System.Net;
 using System.Text;
 using WebApp.Business.Interfaces;
 using WebApp.EntityFramework.DataProviders;
@@ -14,10 +13,11 @@ namespace WebApp.Extensions
     {
         public static void AddAppServices(this IServiceCollection services)
         {
+            services.AddScoped<IMessagesDataProvider, EntityFrameworkMessageDataProvider>();
             services.AddScoped<ISessionDataProvider, EntityFrameworkSessionDataProvider>();
             services.AddScoped<IUserDataProvider, EntityFrameworkUserDataProvider>();
             services.AddHttpContextAccessor();
-            services.AddSingleton<IChatService, ChatService>();
+            services.AddScoped<IChatService, ChatService>();
             services.AddScoped<ITokenService, JwtTokenService>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
         }

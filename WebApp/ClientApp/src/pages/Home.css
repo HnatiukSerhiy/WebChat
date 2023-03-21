@@ -98,6 +98,7 @@ body {
   height: 50px;
   border-radius: 50%;
   object-fit: cover;
+  background-color: #ddddf7;
 }
 
 .user-chat-info span {
