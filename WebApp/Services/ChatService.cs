@@ -49,7 +49,8 @@ public class ChatService : IChatService
                 message.ReceiverId == id && message.SenderId == userId ||
                 message.SenderId == id && message.ReceiverId == userId);
 
-            chats.Add(new($"{id}_{userId}", chatMessages));
+            string chatId = new Guid().ToString();
+            chats.Add(new(chatId, chatMessages));
         }
 
         return chats;
@@ -58,7 +59,7 @@ public class ChatService : IChatService
     public Message PostMessage(MessageInput input)
     {
         var message = mapper.Map<Message>(input);
-        broadcaster.OnNext(new(EventType.NewMessage, message));
+        broadcaster.OnNext(new(EventType.NewMessage, message, input.ChatId));
         return message;
     }
 
@@ -67,11 +68,15 @@ public class ChatService : IChatService
         return broadcaster.Where(x => x.Type == EventType.NewMessage).Select(x => x.Message!);
     }
 
-    public IObservable<Message> SubscribeForReceiving(int receiverId)
+    public IObservable<SubscriptionMessageResponse> SubscribeForReceiving(int receiverId)
     {
         return broadcaster.Where(x => x.Type == EventType.NewMessage)
-            .Select(x => x.Message!)
-            .Where(x => x.ReceiverId == receiverId);
+                .Where(x => x.Message?.ReceiverId == receiverId)
+                .Select(x =>
+                {
+                    var message = new SubscriptionMessageResponse(x.ChatId);
+                    return message.BuildFromMessage(x.Message!);
+                });
     }
 
     public IObservable<Event> SubscribeEvents() => broadcaster;

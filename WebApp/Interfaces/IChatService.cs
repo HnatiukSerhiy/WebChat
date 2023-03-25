@@ -20,5 +20,5 @@ public interface IChatService
 
     IObservable<Event> SubscribeEvents();
 
-    IObservable<Message> SubscribeForReceiving(int receiverId);
+    IObservable<SubscriptionMessageResponse> SubscribeForReceiving(int receiverId);
 }

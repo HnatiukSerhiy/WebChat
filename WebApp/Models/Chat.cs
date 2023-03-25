@@ -4,7 +4,7 @@ namespace WebApp.Models;
 
 public class Chat
 {
-    public string Id { set; get; } // Based on chat participants
+    public string Id { set; get; }
 
     public IEnumerable<Message> Messages { set; get; }
 
