@@ -11,7 +11,10 @@ export type Message = {
   receiverId: number;
 };
 
-export type MessagesState = Chat[];
+export type MessagesState = {
+  chats: Chat[];
+  currentChatId: string | null;
+};
 
 export type Chat = {
   id: string;

@@ -5,3 +5,7 @@ enum Action {
 }
 
 export const searchUser = createAction<string>(Action.Search);
+
+export type UsersAction = ReturnType<
+  | typeof searchUser
+>;

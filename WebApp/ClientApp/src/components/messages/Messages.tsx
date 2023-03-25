@@ -1,11 +1,15 @@
 import './Messages.css';
 import Message from 'components/message/Message';
+import { Message as Type } from 'behavior/messages/types';
 
-const Messages = () => {
+type Props = {
+  messages: Type[];
+};
+
+const Messages = ({ messages }: Props) => {
   return (
     <div className="messages">
-      <Message message={{ value: 'hello' } as any} />
-      <Message message={{ value: 'hello' } as any} />
+      {messages.map(message => <Message message={message} />)}
     </div>
   );
 };

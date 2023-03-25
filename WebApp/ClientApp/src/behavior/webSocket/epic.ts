@@ -10,7 +10,6 @@ import { messageReceived } from 'behavior/messages';
 import { messagesSubscription } from './queries';
 import WebSocketProvider from './webSocketProvider';
 import { createConnectionInitOperation, createStartSubscriptionOperation } from './helpers';
-import { SubscriptionMessageResponse } from './types';
 
 const webSocketProvider = new WebSocketProvider();
 
@@ -29,7 +28,11 @@ const epic: Epic<WebSocketAction> = action$ => {
 
       return socket$.pipe(
         map((data: any) => {
-          return messageReceived((data.newMessages as SubscriptionMessageResponse));
+          const payload = {
+            message: data.newMessages.messages,
+            chatId: data.newMessages.chatId,
+          };
+          return messageReceived(payload);
         }),
       );
   }));

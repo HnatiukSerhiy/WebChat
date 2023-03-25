@@ -25,7 +25,6 @@ const Input = ({ receiverId }: Props) => {
       };
       sendMessage(payload);
     }
-
   };
 
   return (

@@ -1,4 +1,4 @@
-import messagesSlice, { messageReceived } from './slice';
+import messagesSlice, { messageReceived, chatsLoaded, setCurrentChatId } from './slice';
 import messagesEpic from './epic';
 import { sendMessage, getChats } from './actions';
 
@@ -8,4 +8,6 @@ export {
   sendMessage,
   messagesEpic,
   getChats,
+  chatsLoaded,
+  setCurrentChatId,
 };

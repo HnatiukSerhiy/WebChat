@@ -17,4 +17,5 @@ export type SubscriptionMessageResponse = {
   value: string;
   senderId: number;
   receiverId: number;
+  chatId: string;
 };
