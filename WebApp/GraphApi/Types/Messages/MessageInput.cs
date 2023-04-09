@@ -2,12 +2,12 @@
 
 public class MessageInput
 {
-    public string Message { set; get; }
+    public string Value { set; get; }
     public string ChatId { set; get; }
 
-    public MessageInput(string message, string chatId)
+    public MessageInput(string value, string chatId)
     {
-        Message = message;
+        Value = value;
         ChatId = chatId;
     }
 }

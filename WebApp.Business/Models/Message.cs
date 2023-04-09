@@ -16,17 +16,4 @@ public class SubscriptionMessageResponse
     public int ReceiverId { set; get; }
     public string ChatId { set; get; }
 
-    public SubscriptionMessageResponse() { }
-    public SubscriptionMessageResponse(string chatId) => ChatId = chatId;
-
-    public SubscriptionMessageResponse BuildFromMessage(Message message)
-    {
-        return new()
-        {
-            Id = message.Id,
-            Value = message.Value,
-            SenderId = message.SenderId,
-            ReceiverId = message.ReceiverId,
-        };
-    }
 }

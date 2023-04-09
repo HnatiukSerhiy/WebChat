@@ -23,13 +23,18 @@ export type Chat = {
 
 export type SendMessageResponse = {
   messages: {
-    send: Message;
+    send: {
+      message: Message;
+      chatId: string;
+    };
   };
 };
 
 export type GetChatsResponse = {
   messages: {
-    id: string;
-    messages: Message[];
-  } [];
+    getChats: {
+      id: string;
+      messages: Message[];
+    }[];
+  };
 };

@@ -6,6 +6,7 @@ enum Action {
   LoginUser = 'user/login',
   RefreshToken = 'token/refresh',
   LogoutUser = 'user/logout',
+  Search = 'user/search',
 }
 
 export const registerUser = createAction<UserRegisterInput>(Action.RegisterUser);

@@ -27,7 +27,10 @@ const epic: Epic<WebSocketAction> = action$ => {
       socket$.next(subscriptionStartOperation);
 
       return socket$.pipe(
+        filter((response: any) => response.type === 'data'),
         map((data: any) => {
+          console.log(data);
+
           const payload = {
             message: data.newMessages.messages,
             chatId: data.newMessages.chatId,

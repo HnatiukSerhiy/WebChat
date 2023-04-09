@@ -1,5 +1,5 @@
-export const sendMessageMutation = `
-mutation sendMessage($input:MessageInput!){
+export const sendMessageMutation =
+`mutation sendMessage($input:MessageInput!){
   messages{
     send(input:$input){
       value
@@ -7,12 +7,17 @@ mutation sendMessage($input:MessageInput!){
   }
 }`;
 
-export const getChatsQuery = `
-query getChats($input:Int!){
+export const getChatsQuery =
+`query getChats($input:Int!){
   messages{
     getChats(userId:$input){
       id
-      messages
+      messages{
+        id
+        value
+        senderId
+        receiverId
+      }
     }
   }
 }`;

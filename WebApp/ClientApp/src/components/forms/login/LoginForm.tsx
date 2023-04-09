@@ -35,7 +35,7 @@ const LoginForm = () => {
   };
 
   return (
-    <Box sx={{ maxWidth: '25rem' }} boxShadow={'5px 5px 10px #ccc'} padding={5}>
+    <Box sx={{ maxWidth: '20rem' }} boxShadow={'5px 5px 10px #ccc'} padding={5}>
       <Typography display={'flex'} alignItems="flex-end" gap={'0.5rem'} variant="h4" component="h1" sx={{ mb: '2rem' }}>
         Login
         <LoginIcon fontSize="large" />

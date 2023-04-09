@@ -2,7 +2,6 @@
 using WebApp.Business.Models;
 using WebApp.GraphApi.Types.Messages;
 using WebApp.Interfaces;
-using WebApp.Models;
 
 namespace WebApp.GraphApi.Mutations;
 

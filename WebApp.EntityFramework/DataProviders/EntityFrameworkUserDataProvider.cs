@@ -26,14 +26,25 @@ public class EntityFrameworkUserDataProvider : IUserDataProvider
     {
         var entity = mapper.Map<UserEntity>(model);
         var newEntity = dataContext.Users.Add(entity).Entity;
+
         dataContext.SaveChanges();
+
         return mapper.Map<User>(newEntity);
     }
 
-    public IEnumerable<User> GetByNamePattern(string pattern)
+    public IEnumerable<User> GetByNamePattern(string? pattern)
     {
+        Func<UserEntity, bool> predicate = user =>
+        {
+            if (pattern is null)
+                return false;
+
+            return (user.Firstname.ToLower() + " " + user.Lastname.ToLower())
+                .Contains(pattern);
+        };
+
         return dataContext.Users
-            .Where(user => (user.Firstname + user.Lastname).Contains(pattern))
+            .Where(predicate)
             .Select(user => mapper.Map<User>(user));
     }
 

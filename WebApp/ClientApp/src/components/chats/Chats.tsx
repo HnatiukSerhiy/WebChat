@@ -2,16 +2,16 @@ import useActions from 'hooks/useActions';
 import useAppSelector from 'hooks/useAppSelector';
 
 const Chats = () => {
-  const { chats } = useAppSelector(state => state.messages);
+  const messages = useAppSelector(state => state.messages);
   const { setCurrentChatId } = useActions();
 
   const onChatClick = (chatId: string) => {
     setCurrentChatId(chatId);
   };
-
+  console.log(messages);
   return (
     <div className="chats">
-      {chats.map(({ messages, id }) => (
+      {messages?.chats?.map(({ messages, id }) => (
         <div key={id} onClick={() => onChatClick(id)} className="user-chat">
           <img src="" alt="" />
           <div className="user-chat-info">

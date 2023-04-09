@@ -19,7 +19,7 @@ const epic: Epic<MessagesAction> = action$ => {
     filter(getChats.match),
     map(action => action.payload),
     mergeMap(payload => performGraphRequest<GetChatsResponse>(getChatsQuery, { input: payload }).pipe(
-      map(response => chatsLoaded(response.messages)),
+      map(response => chatsLoaded(response.messages.getChats)),
     )),
   );
 

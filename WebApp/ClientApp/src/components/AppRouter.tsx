@@ -12,9 +12,16 @@ const AppRouter = () => {
     <Routes>
       <Route path="/" element={<Navigate to={Path.Home} />} />
       <Route
-        index
         path={Path.Home}
-        element={(<Home />)}
+        element={(
+          <WithTokenRefresh>
+            <RequireAuthenticated>
+              <WithWebSocketConnection>
+                <Home />
+              </WithWebSocketConnection>
+            </RequireAuthenticated>
+          </WithTokenRefresh>
+        )}
       />
       <Route path={Path.Login} element={<Login />} />
       <Route path={Path.Register} element={<Register />} />

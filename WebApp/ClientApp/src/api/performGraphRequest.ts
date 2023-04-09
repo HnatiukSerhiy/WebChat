@@ -15,7 +15,6 @@ const performGraphRequest = <T>(query: string, variables?: unknown, headers?: Re
 
   return new Observable<T>(subscriber => {
     fetch(url, requestInit)
-      .then(response => handleResponse(response, requestInit))
       .then(response => response.json())
       .then((json: ApiResponse<T>) => {
         subscriber.next(json.data);

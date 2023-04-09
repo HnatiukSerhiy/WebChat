@@ -7,7 +7,7 @@ export const buildRequestParams = (query: string, variables?: unknown, headers?:
         'Content-Type': 'application/json',
         ...headers,
     };
-    const accessToken = localStorage.getItem('accessToken');
+    const accessToken = localStorage.getItem('AccessToken');
 
     if (accessToken) {
         defaultHeaders['Authorization'] = 'Bearer ' + accessToken;

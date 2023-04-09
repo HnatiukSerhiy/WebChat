@@ -8,6 +8,7 @@ import useFormContext from 'hooks/useFormContext';
 import useActions from 'hooks/useActions';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useState } from 'react';
+import useLoggined from 'hooks/useLoggined';
 
 type FormValues = {
   lastname?: string;
@@ -34,6 +35,8 @@ const RegisterForm = () => {
   const { registerUser } = useActions();
 
   const handleSubmit = () => isFormValid && registerUser(values as UserRegisterInput);
+
+  useLoggined();
 
   return (
     <Box sx={{ maxWidth: '25rem' }} boxShadow={'5px 5px 10px #ccc'} padding={5}>

@@ -1,11 +1,13 @@
-export const searchUserQuery = `
-query searchUser($input:String){
+export const searchUserQuery =
+`query searchUser($input:String){
   user{
-    search{
+    searchByName(pattern:$input) {
       id
       firstname
       lastname
       email
+      password
+      description
     }
   }
 }`;

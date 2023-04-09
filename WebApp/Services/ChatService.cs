@@ -72,10 +72,17 @@ public class ChatService : IChatService
     {
         return broadcaster.Where(x => x.Type == EventType.NewMessage)
                 .Where(x => x.Message?.ReceiverId == receiverId)
-                .Select(x =>
+                .Select(e =>
                 {
-                    var message = new SubscriptionMessageResponse(x.ChatId);
-                    return message.BuildFromMessage(x.Message!);
+                    var message = e.Message;
+                    return new SubscriptionMessageResponse()
+                    {
+                        ChatId = e.ChatId,
+                        Id = message!.Id,
+                        Value = message.Value,
+                        SenderId = message.SenderId,
+                        ReceiverId = message.ReceiverId,
+                    };
                 });
     }
 

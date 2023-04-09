@@ -4,8 +4,9 @@ import Messages from 'components/messages/Messages';
 import useAppSelector from 'hooks/useAppSelector';
 
 const Chat = () => {
-  const currentChat = useAppSelector(({ messages: { chats, currentChatId } }) => {
-    return chats.find(c => c.id === currentChatId);
+  const currentChat = useAppSelector(state => {
+    const currentChatId = state.messages.currentChatId;
+    return state.messages?.chats?.find(c => c.id === currentChatId);
   });
 
   return (
