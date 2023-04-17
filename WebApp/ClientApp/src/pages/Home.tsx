@@ -1,9 +1,8 @@
-import './Home.css';
-import Chat from 'components/chat/Chat';
-import Sidebar from 'components/sidebar/Sidebar';
 import { useEffect } from 'react';
 import useActions from 'hooks/useActions';
 import useAppSelector from 'hooks/useAppSelector';
+import Nav from 'components/nav/Nav';
+import ChatBody from 'components/chatBody/ChatBody';
 
 const Home = () => {
   const { getChats } = useActions();
@@ -15,11 +14,9 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="home">
-      <div className="container">
-        <Sidebar />
-        <Chat />
-      </div>
+    <div className="__main">
+      <Nav />
+      <ChatBody />
     </div>
   );
 };

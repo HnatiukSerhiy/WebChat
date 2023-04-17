@@ -9,7 +9,7 @@ import {
 
 import { messageReceived, sendMessage, getChats, chatsLoaded, setCurrentChatId } from 'behavior/messages';
 import { createWebSocketConnection, disconnectWebSocket } from 'behavior/webSocket';
-import { searchUser } from 'behavior/users/actions';
+import { searchUser, getAllUsers } from 'behavior/users/actions';
 
 const actions = {
   pushUser,
@@ -26,6 +26,7 @@ const actions = {
   searchUser,
   chatsLoaded,
   setCurrentChatId,
+  getAllUsers,
 };
 
 export default actions;

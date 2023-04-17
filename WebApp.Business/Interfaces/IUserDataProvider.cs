@@ -8,7 +8,7 @@ namespace WebApp.Business.Interfaces
 
         User Add(User model);
 
-        IEnumerable<User> GetByNamePattern(string pattern);
+        IEnumerable<User> GetByNamePattern(string? pattern);
 
         User GetByEmail(string email);
 

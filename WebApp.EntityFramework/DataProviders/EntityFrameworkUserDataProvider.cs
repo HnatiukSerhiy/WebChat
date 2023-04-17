@@ -40,7 +40,7 @@ public class EntityFrameworkUserDataProvider : IUserDataProvider
                 return false;
 
             return (user.Firstname.ToLower() + " " + user.Lastname.ToLower())
-                .Contains(pattern);
+                .Contains(pattern.ToLower());
         };
 
         return dataContext.Users

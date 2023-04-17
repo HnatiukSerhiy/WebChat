@@ -9,7 +9,6 @@ public class UserQuery
     public static IEnumerable<User> GetAll([FromServices] IUserDataProvider dataProvider)
         => dataProvider.GetAllUsers();
 
-    [Authorize]
-    public static IEnumerable<User> SearchByName([FromServices] IUserDataProvider dataProvider, string pattern)
+    public static IEnumerable<User> SearchByName([FromServices] IUserDataProvider dataProvider, string? pattern)
         => dataProvider.GetByNamePattern(pattern);
 }

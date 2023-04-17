@@ -1,10 +1,8 @@
-import type { RefreshTokenResponse } from 'behavior/authentication/types';
 import type { ApiResponse } from './types';
-import { refreshTokenMutation } from '../behavior/authentication/queries';
 import { buildRequestParams } from './buildRequestParams';
-import { Observable } from 'rxjs';
+import { Observable, exhaustMap, from, map } from 'rxjs';
 
-const performGraphRequest = <T>(query: string, variables?: unknown, headers?: Record<string, string>): Observable<T> => {
+const performGraphRequest = <TResponse>(query: string, variables?: unknown, headers?: Record<string, string>): Observable<TResponse> => {
   const { url, body, headers: requestHeaders } = buildRequestParams(query, variables, headers);
 
   const requestInit: RequestInit = {
@@ -13,58 +11,11 @@ const performGraphRequest = <T>(query: string, variables?: unknown, headers?: Re
     headers: requestHeaders,
   };
 
-  return new Observable<T>(subscriber => {
-    fetch(url, requestInit)
-      .then(response => response.json())
-      .then((json: ApiResponse<T>) => {
-        subscriber.next(json.data);
-        subscriber.complete();
-      });
-  });
+  return from(fetch(url, requestInit)).pipe(
+    exhaustMap(response => from(response.json()).pipe(
+      map((respone: ApiResponse<TResponse>) => respone.data),
+    )),
+  );
 };
 
 export default performGraphRequest;
-
-const handleResponse = (response: Response, requestInit: RequestInit): Response => {
-  if (response.status === 401) {
-    const observable = performRefreshResponse();
-
-    observable.subscribe({
-      next(resfreshResponse) {
-        const { accessToken, refreshToken } = resfreshResponse.authentication.refresh;
-
-        localStorage.setItem('AccessToken', accessToken);
-        localStorage.setItem('RefreshToken', refreshToken);
-
-        return new Observable<Response>(subscriber => {
-          fetch(response.url, requestInit)
-            .then(res => {
-              subscriber.next(res);
-              subscriber.complete();
-            });
-        });
-      },
-    });
-  }
-
-  return response;
-};
-
-const performRefreshResponse = (): Observable<RefreshTokenResponse> => {
-  const { url, body, headers } = buildRequestParams(refreshTokenMutation);
-
-  const requestInit: RequestInit = {
-    method: 'POST',
-    body,
-    headers,
-  };
-
-  return new Observable(subscriber => {
-    fetch(url, requestInit)
-      .then(response => response.json())
-      .then((json: ApiResponse<RefreshTokenResponse>) => {
-        subscriber.next(json.data);
-        subscriber.complete();
-      });
-  });
-};

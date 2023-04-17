@@ -21,6 +21,10 @@ export type Chat = {
   messages: Message[];
 };
 
+export type EmptyChat = {
+  receiverId: number;
+};
+
 export type SendMessageResponse = {
   messages: {
     send: {

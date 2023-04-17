@@ -11,3 +11,17 @@ export const searchUserQuery =
     }
   }
 }`;
+
+export const getAllUsersQuery =
+`query getAll{
+  user{
+    getAll{
+      id
+      firstname
+      lastname
+      email
+      password
+      description
+    }
+  }
+}`;
