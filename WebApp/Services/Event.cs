@@ -7,12 +7,9 @@ public class Event
     public EventType? Type { set; get; }
     public Message? Message { set; get; }
 
-    public string ChatId { set; get; }
-
-    public Event(EventType type, Message message, string chatId)
+    public Event(EventType type, Message message)
     {
         Type = type;
         Message = message;
-        ChatId = chatId;
     }
 }

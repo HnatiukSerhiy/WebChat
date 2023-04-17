@@ -3,11 +3,15 @@
 public class MessageInput
 {
     public string Value { set; get; }
-    public string ChatId { set; get; }
 
-    public MessageInput(string value, string chatId)
+    public int SenderId { set; get; }
+
+    public int ReceiverId { set; get; }
+
+    public MessageInput(string value, int senderId, int receiverId)
     {
         Value = value;
-        ChatId = chatId;
+        ReceiverId = receiverId;
+        SenderId = senderId;
     }
 }

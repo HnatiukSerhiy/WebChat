@@ -12,7 +12,7 @@ public interface IChatService
 
     IEnumerable<Message> GetMessagesForUser(int userId);
 
-    IEnumerable<Chat> GetChats(int userId);
+    Task<List<Chat>> GetChats(int userId);
 
     Message PostMessage(MessageInput input);
 

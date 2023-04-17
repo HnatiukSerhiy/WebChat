@@ -10,5 +10,7 @@ public interface IMessagesDataProvider
 
     IEnumerable<Message> GetMessagesForUser(int userId);
 
+    Message GetById(long id);
+
     long Save(Message message);
 }

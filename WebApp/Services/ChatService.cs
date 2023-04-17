@@ -28,39 +28,30 @@ public class ChatService : IChatService
     public IEnumerable<Message> GetMessagesForUser(int userId)
         => messagesDataProvider.GetMessagesForUser(userId);
 
-    public IEnumerable<Chat> GetChats(int userId)
+    public async Task<List<Chat>> GetChats(int userId)
     {
-        var messages = messagesDataProvider.GetMessagesForUser(userId).ToArray();
-        var usersIds = new List<int>();
-        var chats = new List<Chat>();
+        var tasks = new List<Task<List<Chat>>>();
+        var messages = messagesDataProvider.GetMessagesForUser(userId).ToList();
 
-        foreach (var message in messages)
-        {
-            if (message.SenderId != userId)
-                usersIds.Add(message.SenderId);
+        var messagesByUser = messages.Where(message => message.SenderId == userId).ToList();
+        messages.RemoveAll(message => message.SenderId == userId);
+        var otherMessages = messages.Where(message => message.ReceiverId == userId);
 
-            if (message.ReceiverId != userId)
-                usersIds.Add(message.ReceiverId);
-        }
+        tasks.Add(BuildChats(messagesByUser));
+        tasks.Add(BuildChats(otherMessages));
 
-        foreach (var id in usersIds)
-        {
-            var chatMessages = messages.Where(message =>
-                message.ReceiverId == id && message.SenderId == userId ||
-                message.SenderId == id && message.ReceiverId == userId);
+        var chats = await Task.WhenAll(tasks).ConfigureAwait(false);
 
-            string chatId = new Guid().ToString();
-            chats.Add(new(chatId, chatMessages));
-        }
-
-        return chats;
+        return chats.SelectMany(c => c).ToList();
     }
 
     public Message PostMessage(MessageInput input)
     {
         var message = mapper.Map<Message>(input);
-        broadcaster.OnNext(new(EventType.NewMessage, message, input.ChatId));
-        return message;
+        broadcaster.OnNext(new(EventType.NewMessage, message));
+
+        long postedMessageId = messagesDataProvider.Save(message);
+        return messagesDataProvider.GetById(postedMessageId);
     }
 
     public IObservable<Message> SubscribeAll()
@@ -77,7 +68,6 @@ public class ChatService : IChatService
                     var message = e.Message;
                     return new SubscriptionMessageResponse()
                     {
-                        ChatId = e.ChatId,
                         Id = message!.Id,
                         Value = message.Value,
                         SenderId = message.SenderId,
@@ -87,4 +77,19 @@ public class ChatService : IChatService
     }
 
     public IObservable<Event> SubscribeEvents() => broadcaster;
+
+    private Task<List<Chat>> BuildChats(IEnumerable<Message> messages)
+    {
+        var chats = new List<Chat>();
+        var messageGroups = messages.GroupBy(message => message.ReceiverId);
+
+        foreach (var group in messageGroups)
+        {
+            var sortedMessages = group.OrderBy(message => message.SentDate);
+            string chatId = Guid.NewGuid().ToString();
+            chats.Add(new(chatId, sortedMessages));
+        }
+
+        return Task.FromResult(chats);
+    }
 }

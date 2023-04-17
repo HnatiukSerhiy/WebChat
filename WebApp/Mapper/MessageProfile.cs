@@ -9,7 +9,6 @@ public class MessageProfile : Profile
 {
     public MessageProfile()
     {
-        CreateMap<MessageInput, Message>()
-            .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Value));
+        CreateMap<MessageInput, Message>().ReverseMap();
     }
 }

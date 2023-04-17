@@ -36,6 +36,12 @@ public class EntityFrameworkMessageDataProvider : IMessagesDataProvider
             .Select(message => mapper.Map<Message>(message));
     }
 
+    public Message GetById(long id)
+    {
+        var entity = dataContext.Messages.FirstOrDefault(entity => entity.Id == id);
+        return mapper.Map<Message>(entity);
+    }
+
     public IEnumerable<Message> GetFromUser(int userId)
     {
         return dataContext.Messages
@@ -46,6 +52,10 @@ public class EntityFrameworkMessageDataProvider : IMessagesDataProvider
     public long Save(Message message)
     {
         var entity = mapper.Map<MessageEntity>(message);
-        return dataContext.Messages.Add(entity).Entity.Id;
+        entity.SentDate = DateTime.Now;
+
+        var postedMessage = dataContext.Messages.Add(entity);
+        dataContext.SaveChanges();
+        return postedMessage.Entity.Id;
     }
 }
