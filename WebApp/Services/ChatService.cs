@@ -33,16 +33,17 @@ public class ChatService : IChatService
         var tasks = new List<Task<List<Chat>>>();
         var messages = messagesDataProvider.GetMessagesForUser(userId).ToList();
 
-        var messagesByUser = messages.Where(message => message.SenderId == userId).ToList();
-        messages.RemoveAll(message => message.SenderId == userId);
-        var otherMessages = messages.Where(message => message.ReceiverId == userId);
+        var chats = new List<Chat>();
+        var groups = messages.GroupBy(message => GetGroupingKey(userId, message.SenderId, message.ReceiverId));
 
-        tasks.Add(BuildChats(messagesByUser));
-        tasks.Add(BuildChats(otherMessages));
+        foreach (var group in groups)
+        {
+            var sortedMessages = group.OrderBy(message => message.SentDate);
+            string chatId = Guid.NewGuid().ToString();
+            chats.Add(new(chatId, sortedMessages));
+        }
 
-        var chats = await Task.WhenAll(tasks).ConfigureAwait(false);
-
-        return chats.SelectMany(c => c).ToList();
+        return chats;
     }
 
     public Message PostMessage(MessageInput input)
@@ -78,18 +79,11 @@ public class ChatService : IChatService
 
     public IObservable<Event> SubscribeEvents() => broadcaster;
 
-    private Task<List<Chat>> BuildChats(IEnumerable<Message> messages)
+    private string GetGroupingKey(int currentUserId, int senderId, int receiverId)
     {
-        var chats = new List<Chat>();
-        var messageGroups = messages.GroupBy(message => message.ReceiverId);
+        if (currentUserId == senderId)
+            return $"{senderId}_{receiverId}";
 
-        foreach (var group in messageGroups)
-        {
-            var sortedMessages = group.OrderBy(message => message.SentDate);
-            string chatId = Guid.NewGuid().ToString();
-            chats.Add(new(chatId, sortedMessages));
-        }
-
-        return Task.FromResult(chats);
+        return $"{receiverId}_{senderId}";
     }
 }
