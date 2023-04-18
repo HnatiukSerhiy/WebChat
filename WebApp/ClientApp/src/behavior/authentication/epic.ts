@@ -40,7 +40,8 @@ const authenticationEpic: Epic<AuthenticationAction> = action$ => {
 
   const logoutUser$ = action$.pipe(
     filter(logoutUser.match),
-    mergeMap(() => performGraphRequest(logoutUserMutation).pipe(map(() => {
+    mergeMap(() => performGraphRequest(logoutUserMutation).pipe(
+      map(() => {
           localStorage.removeItem('AccessToken');
           localStorage.removeItem('RefreshToken');
 

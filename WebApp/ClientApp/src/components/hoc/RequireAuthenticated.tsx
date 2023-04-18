@@ -1,4 +1,5 @@
-import { ReactElement, useEffect, useState } from 'react';
+import useAppSelector from 'hooks/useAppSelector';
+import { ReactElement } from 'react';
 import { Navigate } from 'react-router-dom';
 import { Path } from 'utilities/enums';
 

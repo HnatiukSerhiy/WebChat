@@ -1,6 +1,8 @@
 import { type ReactElement, useEffect } from 'react';
 import useActions from 'hooks/useActions';
 import useAppSelector from 'hooks/useAppSelector';
+import { Navigate } from 'react-router-dom';
+import { Path } from 'utilities/enums';
 
 type Props = {
   children: ReactElement;
@@ -15,7 +17,10 @@ const WithTokenRefresh = ({ children }: Props) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return user && children;
+  if (!user)
+    return <Navigate to={Path.Login} />;
+
+  return children;
 };
 
 export default WithTokenRefresh;

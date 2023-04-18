@@ -1,9 +1,12 @@
 ﻿using WebApp.Interfaces;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using AutoMapper;
 using WebApp.Business.Interfaces;
 using WebApp.Business.Models;
+using WebApp.Extensions;
 using WebApp.GraphApi.Types.Messages;
 using WebApp.Models;
 
@@ -28,20 +31,18 @@ public class ChatService : IChatService
     public IEnumerable<Message> GetMessagesForUser(int userId)
         => messagesDataProvider.GetMessagesForUser(userId);
 
-    public async Task<List<Chat>> GetChats(int userId)
+    public IList<Chat> GetChats(int userId)
     {
-        var tasks = new List<Task<List<Chat>>>();
-        var messages = messagesDataProvider.GetMessagesForUser(userId).ToList();
+        var messages = messagesDataProvider.GetMessagesForUser(userId);
+        var groups = messages.GroupBy(message => GetGroupingKey(userId, message.SenderId, message.ReceiverId)).ToArray();
 
         var chats = new List<Chat>();
-        var groups = messages.GroupBy(message => GetGroupingKey(userId, message.SenderId, message.ReceiverId));
-
-        foreach (var group in groups)
+        groups.Iterate(group =>
         {
             var sortedMessages = group.OrderBy(message => message.SentDate);
             string chatId = Guid.NewGuid().ToString();
             chats.Add(new(chatId, sortedMessages));
-        }
+        });
 
         return chats;
     }

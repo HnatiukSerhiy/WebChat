@@ -14,13 +14,13 @@ const AppRouter = () => {
       <Route
         path={Path.Home}
         element={(
-          <WithTokenRefresh>
-            <RequireAuthenticated>
+          <RequireAuthenticated>
+            <WithTokenRefresh>
               <WithWebSocketConnection>
                 <Home />
               </WithWebSocketConnection>
-            </RequireAuthenticated>
-          </WithTokenRefresh>
+            </WithTokenRefresh>
+          </RequireAuthenticated>
         )}
       />
       <Route path={Path.Login} element={<Login />} />

@@ -10,7 +10,6 @@ public class MessagesQuery
     public static IEnumerable<Message> GetAll([FromServices] IChatService chatService, int userId)
         => chatService.GetMessagesForUser(userId);
 
-    [Name("GetChats")]
-    public static Task<List<Chat>> GetChatsAsync([FromServices] IChatService chatService, int userId)
+    public static IList<Chat> GetChats([FromServices] IChatService chatService, int userId)
         => chatService.GetChats(userId);
 }
