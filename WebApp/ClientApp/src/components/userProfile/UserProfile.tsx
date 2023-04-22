@@ -21,14 +21,14 @@ const UserProfile = () => {
           Logout
         </Button>
       </div>
-      <div className="profile__card open">
+      {user?.description && <div className="profile__card open">
         <div className="card__header">
           <h4>Description</h4>
         </div>
         <div className="card__content">
-          {user?.description}
+          {user.description}
         </div>
-      </div>
+      </div>}
     </div>
   );
 };

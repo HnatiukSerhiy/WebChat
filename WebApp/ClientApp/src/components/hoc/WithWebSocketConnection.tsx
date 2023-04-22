@@ -14,9 +14,9 @@ const WithWebSocketConnection = ({ children }: Props) => {
   useEffect(() => {
     createWebSocketConnection({ userId });
 
-    return () => {
-      disconnectWebSocket();
-    };
+    // return () => {
+    //   disconnectWebSocket();
+    // };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

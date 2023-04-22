@@ -5,17 +5,20 @@ type Props = {
   active?: string;
   isOnline: string;
   image?: string;
-  name: string;
+  user:{
+    id?: number;
+    name: string;
+  };
   lastMessage?: string;
-  onClick: (chatId: string) => void;
+  onClick: (userId: number, chatId: string) => void;
   chatId: string;
 };
 
-const ChatListItems = ({ animationDelay, active, name, lastMessage, onClick, chatId }: Props) => {
+const ChatListItems = ({ animationDelay, active, user: { id, name }, lastMessage, onClick, chatId }: Props) => {
   return (
     <div
       style={{ animationDelay: `0.${animationDelay}s` }}
-      onClick={() => onClick(chatId)}
+      onClick={() => onClick(id ?? 0, chatId)}
       className={`chatlist__item ${active ? active : ''} `}
     >
       <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column' }}>

@@ -1,4 +1,4 @@
-import type { Chat, Message, MessagesState } from './types';
+import type { Chat, MessageReceived, MessagesState } from './types';
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
 const initialState: MessagesState = {
@@ -11,19 +11,18 @@ const messagesSlice = createSlice({
   initialState,
   reducers: {
     chatsLoaded: (state, action: PayloadAction<Chat[]>) => ({ ...state, chats: action.payload }),
-    messageReceived: (state, action: PayloadAction<{ message: Message; chatId: string }>) => {
-      const updatedChats = state.chats.map(chat => {
-        if (chat.id === action.payload.chatId) {
-          chat.messages.push(action.payload.message);
-          return chat;
-        }
-        return chat;
-      });
+    messageReceived: (state, action: PayloadAction<MessageReceived>) => {
+      const { id, senderId, receiverId, currentUserId, value } = action.payload;
+      let chatId = '';
+      // eslint-disable-next-line eqeqeq
+      if (senderId == currentUserId)
+        chatId = `${senderId}_${receiverId}_key`;
+      else
+        chatId = `${receiverId}_${senderId}_key`;
 
-      return {
-        ...state,
-        chats: updatedChats,
-      };
+      const chat = state.chats.find(chat => chat.id === chatId);
+      const message = { id, senderId, receiverId, value };
+      chat?.messages.push(message);
     },
     setCurrentChatId: (state, action: PayloadAction<string>) => {
       return {

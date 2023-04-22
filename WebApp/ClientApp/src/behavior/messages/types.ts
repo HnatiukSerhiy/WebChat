@@ -1,5 +1,5 @@
 export type MessageInput = {
-  message: string;
+  value: string;
   receiverId: number;
   senderId: number;
 };
@@ -7,6 +7,14 @@ export type MessageInput = {
 export type Message = {
   id: number;
   value: string;
+  senderId: number;
+  receiverId: number;
+};
+
+export type MessageReceived = {
+  id: number;
+  value: string;
+  currentUserId: number;
   senderId: number;
   receiverId: number;
 };
@@ -28,8 +36,8 @@ export type EmptyChat = {
 export type SendMessageResponse = {
   messages: {
     send: {
-      message: Message;
-      chatId: string;
+      id: string;
+      messages: Message[];
     };
   };
 };

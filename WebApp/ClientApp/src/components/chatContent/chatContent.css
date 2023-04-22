@@ -1,4 +1,7 @@
 .main__chatcontent {
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
   flex-grow: 1;
   padding: 20px 40px;
   max-width: 63%;
@@ -6,6 +9,7 @@
 }
 .content__header {
   padding-bottom: 15px;
+  margin-bottom: 15px;
   border-bottom: 1px solid #ebe7fb;
 }
 .current-chatting-user {
@@ -106,6 +110,9 @@
 }
 .content__footer {
   padding-top: 30px;
+  margin-top: auto;
+  margin-bottom: 0;
+  width: 100%;
 }
 .sendNewMessage {
   background-color: #fff;

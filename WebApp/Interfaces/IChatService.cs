@@ -14,7 +14,7 @@ public interface IChatService
 
     IList<Chat> GetChats(int userId);
 
-    Message PostMessage(MessageInput input);
+    Chat PostMessage(MessageInput input);
 
     IObservable<Message> SubscribeAll();
 

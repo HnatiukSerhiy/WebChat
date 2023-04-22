@@ -1,37 +1,25 @@
 import './chatContent.css';
-import type { Message } from 'behavior/messages/types';
+import type { Message, MessageInput } from 'behavior/messages/types';
 import { useState, createRef, useEffect } from 'react';
 import ChatItem from './ChatItem';
 import { Avatar } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
+import useAppSelector from 'hooks/useAppSelector';
+import useActions from 'hooks/useActions';
+import { User } from 'behavior/authentication/types';
 
 type Props = {
   messages: Message[];
+  user?: User;
 };
 
-const ChatContent = ({ messages }: Props) => {
-  const messagesEndRef = createRef<HTMLDivElement>();
-  const chatItms = [
-    {
-      key: 1,
-      image:
-        'https://pbs.twimg.com/profile_images/1116431270697766912/-NfnQHvh_400x400.jpg',
-      type: '',
-      msg: 'Hi Tim, How are you?',
-    },
-    {
-      key: 2,
-      image:
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTA78Na63ws7B7EAWYgTr9BxhX_Z8oLa1nvOA&usqp=CAU',
-      type: 'other',
-      msg: 'I am fine.',
-    },
-  ];
+const ChatContent = ({ messages, user }: Props) => {
+  const [message, setMessage] = useState<string>('');
 
-  const [state, setState] = useState({
-    chat: chatItms,
-    msg: '',
-  });
+  const messagesEndRef = createRef<HTMLDivElement>();
+  const currentUserId = useAppSelector(state => state.user?.id);
+
+  const { sendMessage } = useActions();
 
   const scrollToBottom = () => {
     (messagesEndRef.current as any)?.scrollIntoView({ behavior: 'smooth' });
@@ -42,18 +30,27 @@ const ChatContent = ({ messages }: Props) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const onStateChange = (e: any) => {
-    setState(prev => ({ ...prev, msg: e.target.value }));
+  const handleMessageSent = () => {
+    if (message.trim().length > 0 && currentUserId) {
+      const payload: MessageInput = {
+        senderId: currentUserId,
+        receiverId: user?.id ?? 0,
+        value: message,
+      };
+
+      sendMessage(payload);
+    }
+    setMessage('');
   };
 
   return (
     <div className="main__chatcontent">
       <div className="content__header">
         <div className="blocks">
-          <div className="current-chatting-user">
+          {user && <div className="current-chatting-user">
             <Avatar />
-            <p>Tim Hover</p>
-          </div>
+            <p>{user?.firstname} {user?.lastname}</p>
+          </div>}
         </div>
         <div className="blocks">
           <div className="settings">
@@ -65,14 +62,13 @@ const ChatContent = ({ messages }: Props) => {
       </div>
       <div className="content__body">
         <div className="chat__items">
-          {state.chat.map(itm => {
+          {messages.map(item => {
             return (
               <ChatItem
                 // animationDelay={index + 2}
-                key={itm.key}
-                user={itm.type ? itm.type : 'me'}
-                msg={itm.msg}
-                image={itm.image}
+                key={item.id}
+                user={item.senderId === currentUserId ? 'me' : 'other'}
+                message={item.value}
               />
             );
           })}
@@ -84,10 +80,10 @@ const ChatContent = ({ messages }: Props) => {
           <input
             type="text"
             placeholder="Type a message here"
-            onChange={onStateChange}
-            value={state.msg}
+            onChange={e => setMessage(e.target.value)}
+            value={message}
           />
-          <button className="btnSendMsg" id="sendMsgBtn">
+          <button onClick={handleMessageSent} className="btnSendMsg" id="sendMsgBtn">
             <i className="fa fa-paper-plane">
               <SendIcon />
             </i>

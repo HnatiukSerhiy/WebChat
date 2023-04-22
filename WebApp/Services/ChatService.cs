@@ -1,8 +1,6 @@
 ﻿using WebApp.Interfaces;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using AutoMapper;
 using WebApp.Business.Interfaces;
 using WebApp.Business.Models;
@@ -14,7 +12,7 @@ namespace WebApp.Services;
 
 public class ChatService : IChatService
 {
-    private readonly Subject<Event> broadcaster;
+    private static Subject<Event> broadcaster = new();
     private readonly IMessagesDataProvider messagesDataProvider;
     private readonly IMapper mapper;
 
@@ -22,7 +20,6 @@ public class ChatService : IChatService
     {
         this.mapper = mapper;
         this.messagesDataProvider = messagesDataProvider;
-        broadcaster = new();
     }
 
     public IEnumerable<Message> GetChatMessages(int senderId, int receiverId)
@@ -34,26 +31,34 @@ public class ChatService : IChatService
     public IList<Chat> GetChats(int userId)
     {
         var messages = messagesDataProvider.GetMessagesForUser(userId);
-        var groups = messages.GroupBy(message => GetGroupingKey(userId, message.SenderId, message.ReceiverId)).ToArray();
+        var groups = messages.GroupBy(message => GetChatKey(userId, message.SenderId, message.ReceiverId)).ToArray();
 
         var chats = new List<Chat>();
         groups.Iterate(group =>
         {
             var sortedMessages = group.OrderBy(message => message.SentDate);
-            string chatId = Guid.NewGuid().ToString();
+            string chatId = group.Key;
             chats.Add(new(chatId, sortedMessages));
         });
 
         return chats;
     }
 
-    public Message PostMessage(MessageInput input)
+    public Chat PostMessage(MessageInput input)
     {
         var message = mapper.Map<Message>(input);
-        broadcaster.OnNext(new(EventType.NewMessage, message));
-
         long postedMessageId = messagesDataProvider.Save(message);
-        return messagesDataProvider.GetById(postedMessageId);
+        var postedMessage = messagesDataProvider.GetById(postedMessageId);
+
+        var chat = new Chat()
+        {
+            Id = GetChatKey(input.SenderId, message.SenderId, message.ReceiverId),
+            Messages = new[] {postedMessage}
+        };
+
+        broadcaster.OnNext(new Event() { Type = EventType.NewMessage, Message = postedMessage });
+
+        return chat;
     }
 
     public IObservable<Message> SubscribeAll()
@@ -72,6 +77,7 @@ public class ChatService : IChatService
                     {
                         Id = message!.Id,
                         Value = message.Value,
+                        CurrentUserId = receiverId,
                         SenderId = message.SenderId,
                         ReceiverId = message.ReceiverId,
                     };
@@ -80,11 +86,11 @@ public class ChatService : IChatService
 
     public IObservable<Event> SubscribeEvents() => broadcaster;
 
-    private string GetGroupingKey(int currentUserId, int senderId, int receiverId)
+    private string GetChatKey(int currentUserId, int senderId, int receiverId)
     {
         if (currentUserId == senderId)
-            return $"{senderId}_{receiverId}";
+            return $"{senderId}_{receiverId}_key";
 
-        return $"{receiverId}_{senderId}";
+        return $"{receiverId}_{senderId}_key";
     }
 }

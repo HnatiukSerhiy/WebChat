@@ -7,7 +7,7 @@ export const createConnectionInitOperation = () => ({
 
 export const createStartSubscriptionOperation = (query: string, variables?: Record<string, unknown>): StartSubscriptionOperation => ({
   type: 'start',
-  id: crypto.randomUUID(),
+  id: '1',
   payload: {
     operationName: 'messagesSubscription',
     query,

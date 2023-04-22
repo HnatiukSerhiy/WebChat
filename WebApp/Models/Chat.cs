@@ -6,7 +6,13 @@ public class Chat
 {
     public string Id { set; get; }
 
-    public IEnumerable<Message> Messages { set; get; }
+    public IEnumerable<Message>? Messages { set; get; }
+
+    public Chat()
+    {
+        Id = string.Empty;
+        Messages = null;
+    }
 
     public Chat(string id, IEnumerable<Message> messages)
     {

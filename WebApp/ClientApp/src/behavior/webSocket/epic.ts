@@ -28,13 +28,17 @@ const epic: Epic<WebSocketAction> = action$ => {
 
       return socket$.pipe(
         filter((response: any) => response.type === 'data'),
-        map((data: any) => {
-          console.log(data);
-
+        map((response: any) => {
+          const { id, receiverId, senderId, value, currentUserId } = response.payload.data.newMessages;
           const payload = {
-            message: data.newMessages.messages,
-            chatId: data.newMessages.chatId,
+            id,
+            value,
+            receiverId,
+            senderId,
+            currentUserId,
+            // sentDate: data.newMessages.se,
           };
+
           return messageReceived(payload);
         }),
       );

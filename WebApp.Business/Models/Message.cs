@@ -16,9 +16,12 @@ public class SubscriptionMessageResponse
 
     public string Value { set; get; } = string.Empty;
 
+    public int CurrentUserId { set; get; }
+
     public int SenderId { set; get; }
 
     public int ReceiverId { set; get; }
+
 
     public DateTime SentDate { set; get; }
 }

@@ -13,6 +13,7 @@ namespace WebApp.Extensions
     {
         public static void AddAppServices(this IServiceCollection services)
         {
+            // services.AddScoped<>()<>()
             services.AddScoped<IMessagesDataProvider, EntityFrameworkMessageDataProvider>();
             services.AddScoped<ISessionDataProvider, EntityFrameworkSessionDataProvider>();
             services.AddScoped<IUserDataProvider, EntityFrameworkUserDataProvider>();

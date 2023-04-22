@@ -1,5 +1,5 @@
 import type { Epic } from 'store/types';
-import type { GetChatsResponse, SendMessageResponse } from './types';
+import type { GetChatsResponse, MessageReceived, SendMessageResponse } from './types';
 import { type MessagesAction, sendMessage, getChats } from './actions';
 import { chatsLoaded, messageReceived } from './slice';
 import { filter, map, merge, mergeMap } from 'rxjs';
@@ -11,7 +11,15 @@ const epic: Epic<MessagesAction> = action$ => {
     filter(sendMessage.match),
     map(action => action.payload),
     mergeMap(payload => performGraphRequest<SendMessageResponse>(sendMessageMutation, { input: payload }).pipe(
-      map(response => messageReceived(response.messages.send)),
+      map(({ messages: { send: { id, messages: message } } }) => {
+        const currentUserId = Number(id.substring(0, id.indexOf('_')));
+        const payload: MessageReceived = {
+          ...message[0],
+          currentUserId,
+        };
+
+        return messageReceived(payload);
+      }),
     )),
   );
 
