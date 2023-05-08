@@ -26,12 +26,6 @@ public class EntityFrameworkSessionDataProvider : ISessionDataProvider
         return mapper.Map<Session>(newEntity);
     }
 
-    public Session GetByUserId(int userId)
-    {
-        var entity = dataContext.Sessions.First(session => session.UserId == userId);
-        return mapper.Map<Session>(entity);
-    }
-
     public Session GetBySessionId(string sessionId)
     {
         var entity = dataContext.Sessions.First(session => session.Id == sessionId);

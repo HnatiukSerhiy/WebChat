@@ -36,7 +36,6 @@ const epic: Epic<WebSocketAction> = action$ => {
             receiverId,
             senderId,
             currentUserId,
-            // sentDate: data.newMessages.se,
           };
 
           return messageReceived(payload);

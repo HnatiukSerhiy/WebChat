@@ -24,6 +24,7 @@ builder.Services.AddCors(options =>
 );
 
 builder.Services.AddAutoMapper(typeof(UserProfile), typeof(MessageProfile));
+
 builder.Services.AddDbContext<DataContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"));
@@ -40,6 +41,7 @@ builder.Services.AddGraphQL(b =>
         .AddSystemTextJson()
         .AddAuthorizationRule()
         .AddErrorInfoProvider(e => e.ExposeExceptionDetails = true));
+
 
 var app = builder.Build();
 

@@ -30,6 +30,7 @@ export type Chat = {
 };
 
 export type EmptyChat = {
+  senderId: number;
   receiverId: number;
 };
 

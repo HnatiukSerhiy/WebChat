@@ -50,13 +50,13 @@ public class EntityFrameworkUserDataProvider : IUserDataProvider
 
     public User GetByEmail(string email)
     {
-        var entity = dataContext.Users.First(user => user.Email == email);
+        var entity = dataContext.Users.FirstOrDefault(user => user.Email == email);
         return mapper.Map<User>(entity);
     }
 
     public User GetById(int id)
     {
-        var entity = dataContext.Users.First(user => user.Id == id);
+        var entity = dataContext.Users.FirstOrDefault(user => user.Id == id);
         return mapper.Map<User>(entity);
     }
 }

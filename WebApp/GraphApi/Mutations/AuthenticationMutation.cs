@@ -23,5 +23,9 @@ public class AuthenticationMutation
     public static RefreshTokenResponse Refresh([FromServices] IAuthenticationService authenticationService)
         => authenticationService.RefreshToken();
 
-    public static string Logout([FromServices] IAuthenticationService authenticationService) => string.Empty;
+    public static string Logout([FromServices] IAuthenticationService authenticationService)
+    {
+        authenticationService.Logout();
+        return string.Empty;
+    }
 }

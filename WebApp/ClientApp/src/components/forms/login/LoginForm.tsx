@@ -20,6 +20,9 @@ const validationRules: ValidationRules = {
 
 const LoginForm = () => {
   const [isPasswordVisible, setPasswordVisible] = useState(false);
+  const { loginUser } = useActions();
+  useLoggined();
+
   const {
     values,
     errors,
@@ -27,8 +30,6 @@ const LoginForm = () => {
     onValueChange,
     onBlur,
   } = useFormContext<FormValues>(validationRules);
-  const { loginUser } = useActions();
-  useLoggined();
 
   const handleSubmit = () => {
     isFormValid && loginUser(values as UserLoginInput);

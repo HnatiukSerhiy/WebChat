@@ -35,7 +35,7 @@ public class AuthenticationService : IAuthenticationService
 
     public UserRegisterResponse Register(UserRegisterInput registerInput)
     {
-        registerInput.Password = BCryptNet.HashPassword(registerInput.Password);;
+        registerInput.Password = BCryptNet.HashPassword(registerInput.Password);
         var model = mapper.Map<User>(registerInput);
 
         using var scope = new TransactionScope();

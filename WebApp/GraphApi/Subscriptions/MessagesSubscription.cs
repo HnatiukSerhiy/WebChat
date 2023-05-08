@@ -6,6 +6,10 @@ namespace WebApp.GraphApi.Subscriptions;
 
 public class MessagesSubscription
 {
-    public static IObservable<SubscriptionMessageResponse> NewMessages([FromServices] IChatService chatService, int userId)
-        => chatService.SubscribeForReceiving(userId);
+    public static IObservable<SubscriptionMessageResponse> NewMessages(
+        [FromServices] IChatService chatService,
+        int userId)
+    {
+        return chatService.SubscribeForReceiving(userId);
+    }
 }

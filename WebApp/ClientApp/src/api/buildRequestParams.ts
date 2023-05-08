@@ -8,10 +8,8 @@ export const buildRequestParams = (query: string, variables?: unknown, headers?:
         ...headers,
     };
     const accessToken = localStorage.getItem('AccessToken');
-
-    if (accessToken) {
-        defaultHeaders['Authorization'] = 'Bearer ' + accessToken;
-    }
+    if (accessToken)
+      defaultHeaders['Authorization'] = 'Bearer ' + accessToken;
 
     return {
         url,

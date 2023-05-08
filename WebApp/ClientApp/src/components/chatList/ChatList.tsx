@@ -4,9 +4,10 @@ import { type Dispatch, type SetStateAction, useEffect, useState } from 'react';
 import useAppSelector from 'hooks/useAppSelector';
 import ChatListItems from './ChatListItems';
 import CreateConversationModal from 'components/modal/CreateConversationModal';
-import { Chat, EmptyChat } from 'behavior/messages/types';
+import { Chat } from 'behavior/messages/types';
 import AddIcon from '@mui/icons-material/Add';
 import { getUsers } from 'behavior/users/helpers';
+import useActions from 'hooks/useActions';
 
 type Props = {
   setCurrentChatKey: Dispatch<SetStateAction<string | undefined>>;
@@ -15,8 +16,9 @@ type Props = {
 
 const ChatList = ({ setCurrentChatKey, setUser }: Props) => {
   const [isModalVisible, setModalVisible] = useState(false);
-  const [emptyChats, setEmptyChats] = useState<EmptyChat[]>([]);
   const [loadedUsers, setLoadedUsers] = useState<User[]>([]);
+
+  const { messageReceived } = useActions();
 
   useEffect(() => {
     getUsers(users => setLoadedUsers(users));
@@ -36,19 +38,26 @@ const ChatList = ({ setCurrentChatKey, setUser }: Props) => {
   };
 
   const handleCreateConverstion = (receiverId: number) => {
-    const isChatAlreadyExist = !!loadedChats.find(chat => chat.messages.find(m => m.receiverId === receiverId)) ||
-      !!emptyChats.find(chat => chat.receiverId === receiverId);
+    const isChatAlreadyExist = !!loadedChats.find(chat => chat.messages.find(m => m.receiverId === receiverId));
 
     if (isChatAlreadyExist)
       return;
 
-    setEmptyChats(chats => [{ receiverId }, ...chats]);
+    const msg = {
+      senderId: currentUserId ?? 0,
+      receiverId,
+    };
+    messageReceived(msg);
     setModalVisible(false);
   };
 
-  const getUserName = (chat: Chat | EmptyChat) => {
-    if ('receiverId' in chat) {
-      const user = loadedUsers.find(user => user.id === chat.receiverId);
+  const getUserName = (chat: Chat) => {
+    if (chat.messages.length === 0) {
+      const index = chat.id.indexOf('_');
+      const firstPart = chat.id.substring(index + 1);
+      const userId = Number(firstPart.substring(0, firstPart.indexOf('_')));
+
+      const user = loadedUsers.find(user => user.id === userId);
       return {
         id: user?.id,
         name: user?.firstname + ' ' + user?.lastname,
@@ -84,18 +93,6 @@ const ChatList = ({ setCurrentChatKey, setUser }: Props) => {
           </button>
         </div>
         <div className="chatlist__items">
-          {emptyChats.map((chat, index) => {
-            return (
-              <ChatListItems
-                user={getUserName(chat)}
-                key={index}
-                onClick={onChatClick}
-                chatId={index.toString()}
-                animationDelay={index + 1}
-                isOnline={''}
-              />
-            );
-          })}
           {loadedChats.map((chat, index) => {
             return (
               <ChatListItems
@@ -103,7 +100,7 @@ const ChatList = ({ setCurrentChatKey, setUser }: Props) => {
                 key={index}
                 onClick={onChatClick}
                 chatId={chat.id}
-                lastMessage={chat.messages[chat.messages.length - 1].value}
+                lastMessage={chat.messages[chat.messages.length - 1]?.value}
                 animationDelay={index + 1}
                 isOnline={''}
               />

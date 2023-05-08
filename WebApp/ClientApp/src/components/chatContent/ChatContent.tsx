@@ -42,7 +42,7 @@ const ChatContent = ({ messages, user }: Props) => {
     }
     setMessage('');
   };
-
+  console.log(messages);
   return (
     <div className="main__chatcontent">
       <div className="content__header">
@@ -62,11 +62,10 @@ const ChatContent = ({ messages, user }: Props) => {
       </div>
       <div className="content__body">
         <div className="chat__items">
-          {messages.map(item => {
+          {messages?.length > 0 && messages.map((item, index) => {
             return (
               <ChatItem
-                // animationDelay={index + 2}
-                key={item.id}
+                key={index}
                 user={item.senderId === currentUserId ? 'me' : 'other'}
                 message={item.value}
               />
