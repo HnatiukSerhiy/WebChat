@@ -38,15 +38,18 @@ const ChatList = ({ setCurrentChatKey, setUser }: Props) => {
   };
 
   const handleCreateConverstion = (receiverId: number) => {
-    const isChatAlreadyExist = !!loadedChats.find(chat => chat.messages.find(m => m.receiverId === receiverId));
+    const isChatAlreadyExist = !!loadedChats.find(chat => chat.messages.find(m => m.receiverId === receiverId || m.senderId === receiverId));
 
-    if (isChatAlreadyExist)
+    if (isChatAlreadyExist) {
+      setModalVisible(false);
       return;
+    }
 
     const msg = {
       senderId: currentUserId ?? 0,
       receiverId,
     };
+
     messageReceived(msg);
     setModalVisible(false);
   };

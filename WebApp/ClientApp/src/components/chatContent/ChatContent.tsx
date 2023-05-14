@@ -42,7 +42,7 @@ const ChatContent = ({ messages, user }: Props) => {
     }
     setMessage('');
   };
-  console.log(messages);
+
   return (
     <div className="main__chatcontent">
       <div className="content__header">
