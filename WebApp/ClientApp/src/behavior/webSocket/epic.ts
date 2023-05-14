@@ -14,7 +14,7 @@ import { createConnectionInitOperation, createStartSubscriptionOperation } from 
 const webSocketProvider = new WebSocketProvider();
 
 const epic: Epic<WebSocketAction> = action$ => {
-  const socket$ = webSocketProvider.createWebSocket('wss://localhost:7098/graphql');
+  const socket$ = webSocketProvider.createWebSocket('wss://web-chat-learn.azurewebsites.net/graphql');
 
   const connection$ = action$.pipe(
     filter(createWebSocketConnection.match),
